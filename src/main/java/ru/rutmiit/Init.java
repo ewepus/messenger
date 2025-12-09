@@ -56,13 +56,17 @@ public class Init implements CommandLineRunner {
         if (chatRepository.count() == 0) {
             log.info("Создание базовых чатов...");
             Optional<User> user = userRepository.findByUsername("user");
+            Optional<User> admin = userRepository.findByUsername("admin");
             List<User> userList = new ArrayList<>();
+            List<User> userList1 = new ArrayList<>();
             user.ifPresent(userList::add);
+            user.ifPresent(userList1::add);
+            admin.ifPresent(userList1::add);
 
             chatRepository.saveAll(List.of(
                     new Chat("Чат №1", ChatStatus.ACTIVE, LocalDateTime.now(), userList),
                     new Chat("Чат №2", ChatStatus.ACTIVE, LocalDateTime.now(), userList),
-                    new Chat("Чат №3", ChatStatus.ACTIVE, LocalDateTime.now(), userList)
+                    new Chat("Чат №3", ChatStatus.ACTIVE, LocalDateTime.now(), userList1)
             ));
             log.info("Чаты созданы");
         } else {

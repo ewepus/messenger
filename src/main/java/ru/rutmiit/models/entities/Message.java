@@ -14,7 +14,7 @@ public class Message extends BaseEntity implements Serializable {
 
     @Getter
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 4096)
     private String text;
 
     @CreatedDate
