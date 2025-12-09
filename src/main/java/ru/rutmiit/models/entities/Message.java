@@ -1,0 +1,40 @@
+package ru.rutmiit.models.entities;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "messages")
+public class Message extends BaseEntity implements Serializable {
+
+    @Getter
+    @Setter
+    @Column(nullable = false)
+    private String text;
+
+    @CreatedDate
+    @Getter
+    @Setter
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime sentAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    @Getter
+    @Setter
+    private Chat chat;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    @Getter
+    @Setter
+    private User user;
+
+    public Message() {
+    }
+}
