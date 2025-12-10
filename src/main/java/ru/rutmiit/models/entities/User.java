@@ -65,17 +65,4 @@ public class User extends BaseEntity implements Serializable {
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", email='" + email + '\'' +
-//                ", roles=" + roles +
-//                ", chats=" + chats +
-//                ", messages=" + messages +
-                '}';
-    }
 }

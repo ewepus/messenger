@@ -7,11 +7,21 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.rutmiit.models.exceptions.ChatNotFoundException;
+import ru.rutmiit.models.exceptions.RecursionException;
 import ru.rutmiit.models.exceptions.UserNotFoundException;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(RecursionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleRecursion(RecursionException ex, Model model) {
+        log.warn("Создание чата с самим собой: {}", ex.getMessage());
+        model.addAttribute("errorTitle", "Невозможно создать чат с самим собой");
+        model.addAttribute("errorMessage", ex.getMessage());
+        model.addAttribute("errorCode", "400");
+        return "error/custom-error";
+    }
 
     @ExceptionHandler(ChatNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

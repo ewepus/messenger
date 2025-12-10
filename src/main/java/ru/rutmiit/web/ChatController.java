@@ -11,6 +11,7 @@ import ru.rutmiit.dto.CreateChatDto;
 import ru.rutmiit.models.entities.Chat;
 import ru.rutmiit.models.entities.User;
 import ru.rutmiit.models.exceptions.ChatNotFoundException;
+import ru.rutmiit.models.exceptions.RecursionException;
 import ru.rutmiit.models.exceptions.UserNotFoundException;
 import ru.rutmiit.services.AuthService;
 import ru.rutmiit.services.ChatService;
@@ -33,9 +34,15 @@ public class ChatController {
         log.info("ChatController инициализирован");
     }
 
-    @GetMapping("/create")
-    public String createChat() {
+    @GetMapping("/create/{name}")
+    public String createChat(@PathVariable("name") String username, Model model, Principal principal) {
+        String targetUsername = principal.getName();
+        if (username.equals(targetUsername)) {
+            throw new RecursionException("Невозможно создать чат с самим собой!");
+        }
+
         log.debug("Отображение формы создания чата");
+        model.addAttribute("username", username);
         return "chat-create";
     }
 
@@ -44,10 +51,12 @@ public class ChatController {
         return new CreateChatDto();
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create/{name}")
     public String createChat(@Valid CreateChatDto chatModel,
                              BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
+                             RedirectAttributes redirectAttributes,
+                             Principal principal,
+                             @PathVariable("name") String username) {
         log.debug("Обработка POST запроса на создание чата");
 
         if (bindingResult.hasErrors()) {
@@ -58,7 +67,17 @@ public class ChatController {
             return "redirect:/chats/create";
         }
 
-        chatService.createChat(chatModel);
+        String targetUsername = principal.getName();
+
+        if (username.equals(targetUsername)) {
+            throw new RecursionException("Невозможно создать чат с самим собой!");
+        }
+        
+        User targetUser = authService.getUser(targetUsername);
+        User user = authService.getUser(username);
+
+        chatService.createChat(List.of(targetUser, user), chatModel);
+
         redirectAttributes.addFlashAttribute("successMessage",
                 "Чат '" + chatModel.getName() + "' успешно создан!");
 

@@ -15,15 +15,9 @@
                 <p><strong>Почта:</strong> <span th:text="${userDetails.email}"></span></p>
                 <p><strong>Номер телефона:</strong> <span th:text="${userDetails.phoneNumber}"></span></p>
 
-                <!--                <form th:method="post" th:action="@{/chats/create}" style="margin: 0;">-->
-                <!--                    <button type="submit" class="contrast outline">Написать</button>-->
-                <!--                </form>-->
-
-                <a th:href="@{/chats/create/{name}(name=${userDetails.username})}"
-                   role="button"
-                   class="outline btn-xs">
-                    Создать новый чат
-                </a>
+                <form th:method="post" th:action="@{/chats/chats-create}" style="margin: 0;">
+                    <button type="submit" class="contrast outline">Написать</button>
+                </form>
             </div>
         </div>
     </article>

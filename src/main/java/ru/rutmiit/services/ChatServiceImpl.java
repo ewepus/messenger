@@ -1,15 +1,16 @@
 package ru.rutmiit.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rutmiit.dto.CreateChatDto;
 import ru.rutmiit.models.entities.Chat;
+import ru.rutmiit.models.entities.User;
+import ru.rutmiit.models.enums.ChatStatus;
 import ru.rutmiit.repositories.ChatRepository;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,20 +19,19 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
-    private final ModelMapper mapper;
 
-    public ChatServiceImpl(ChatRepository chatRepository, ModelMapper mapper) {
+    public ChatServiceImpl(ChatRepository chatRepository) {
         this.chatRepository = chatRepository;
-        this.mapper = mapper;
         log.info("ChatServiceImpl инициализирован");
     }
 
     @Override
     @Transactional
     @CacheEvict(cacheNames = "chats", allEntries = true)
-    public void createChat(CreateChatDto createChatDto) {
+    public void createChat(List<User> users, CreateChatDto createChatDto) {
         log.debug("Создание нового чата: {}", createChatDto.getName());
-        Chat chat = mapper.map(createChatDto, Chat.class);
+
+        Chat chat = new Chat(createChatDto.getName(), ChatStatus.ACTIVE, LocalDateTime.now(), users);
         chatRepository.save(chat);
         log.info("Чат успешно создан: {}, {}, {}", chat.getId(), chat.getName(), chat.getCreatedAt());
     }

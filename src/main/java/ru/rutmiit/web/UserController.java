@@ -10,6 +10,7 @@ import ru.rutmiit.models.entities.User;
 import ru.rutmiit.models.exceptions.UserNotFoundException;
 import ru.rutmiit.services.UserService;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Slf4j
@@ -31,11 +32,18 @@ public class UserController {
     }
 
     @GetMapping("/user-details/{username}")
-    public String showUserDetails(@PathVariable("username") String username, Model model) {
+    public String showUserDetails(@PathVariable("username") String username, Model model, Principal principal) {
         Optional<User> userOptional = userService.userInfo(username);
 
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException("Пользователя с таким username не существует");
+        }
+
+        String targetUsername = principal.getName();
+        if (username.equals(targetUsername)) {
+            log.debug("Отображение деталей пользователя: {}", username);
+            model.addAttribute("userDetails", userOptional.get());
+            return "user-details-self";
         }
 
         log.debug("Отображение деталей пользователя: {}", username);
