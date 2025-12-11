@@ -33,4 +33,12 @@ public class UserServiceImpl implements UserService {
     public Optional<User> userInfo(String username) {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public List<Object[]> top5Users() {
+        return userRepository.findTopUsers()
+                .stream()
+                .limit(5)
+                .toList();
+    }
 }

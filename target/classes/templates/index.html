@@ -4,15 +4,38 @@
 <body>
 <div th:replace="fragments/navbar"></div>
 <main class="container">
-     <article class="text-center">
-     <hgroup>
-     <h1>Добро пожаловать в мессенджер!</h1>
-     <p>Современное приложение на Spring Boot</p>
-     </hgroup>
-     <p>
-         <small>Последнее обновление данных: <strong th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></strong></small>
-     </p>
-     </article>
+    <section style="text-align: center; margin-top: 40px;">
+        <hgroup>
+            <h1>Добро пожаловать в мессенджер!</h1>
+            <p>Современное приложение на Spring Boot</p>
+        </hgroup>
+        <p>
+            <small>Последнее обновление данных:
+                <strong th:text="${#temporals.format(#temporals.createNow(), 'dd.MM.yyyy HH:mm:ss')}"></strong>
+            </small>
+        </p>
+    </section>
+    <section style="margin-top: 60px; max-width: 800px; margin-left: auto; margin-right: auto;">
+        <article class="card" style="padding: 25px;">
+            <hgroup style="text-align: center;">
+                <h2>ТОП-5 самых активных пользователей</h2>
+            </hgroup>
+            <table class="table" style="width: 100%; margin-top: 25px;">
+                <thead>
+                <tr>
+                    <th style="text-align: center;">Имя пользователя</th>
+                    <th style="text-align: center;">Кол-во отправленных сообщений</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${topUsers}">
+                    <td th:text="${row[0]}" style="text-align: center;"></td>
+                    <td th:text="${row[1]}" style="text-align: center;"></td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+    </section>
 </main>
 <footer th:replace="fragments/footer"></footer>
 </body>

@@ -29,12 +29,19 @@ public class Message extends BaseEntity implements Serializable {
     @Setter
     private Chat chat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id")
     @Getter
     @Setter
     private User user;
 
     public Message() {
+    }
+
+    public Message(String text, LocalDateTime sentAt, Chat chat, User user) {
+        this.text = text;
+        this.sentAt = sentAt;
+        this.chat = chat;
+        this.user = user;
     }
 }

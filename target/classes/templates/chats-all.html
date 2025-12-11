@@ -21,7 +21,7 @@
             <td th:text="${chat.id}"></td>
             <td th:text="${chat.name}"></td>
             <td>
-                <a th:href="@{/chats/chat-details/{name}(name=${chat.name})}"
+                <a th:href="@{/chats/chat/{name}(name=${chat.name})}"
                    role="button"
                    class="outline btn-xs">
                     Открыть

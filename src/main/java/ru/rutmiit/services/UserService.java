@@ -9,4 +9,6 @@ public interface UserService {
     List<User> allUsers();
 
     Optional<User> userInfo(String username);
+
+    List<Object[]> top5Users();
 }

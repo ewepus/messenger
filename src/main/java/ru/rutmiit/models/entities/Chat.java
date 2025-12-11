@@ -47,7 +47,7 @@ public class Chat extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Getter
     @Setter
-    private Set<Message> messages = new HashSet<>();
+    private List<Message> messages = new ArrayList<>();
 
     public Chat() {
     }
