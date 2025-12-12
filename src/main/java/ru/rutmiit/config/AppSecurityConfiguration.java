@@ -14,6 +14,7 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import ru.rutmiit.models.enums.UserRoles;
 import ru.rutmiit.repositories.UserRepository;
 import ru.rutmiit.services.AppUserDetailsService;
 
@@ -37,6 +38,8 @@ public class AppSecurityConfiguration {
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                         .requestMatchers("/actuator/**").permitAll() // Для демо; в production настроить безопасность
                         .requestMatchers("/users/profile").authenticated()
+                        .requestMatchers("/chats/all", "/chats/chat-restore/*")
+                        .hasRole(UserRoles.ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

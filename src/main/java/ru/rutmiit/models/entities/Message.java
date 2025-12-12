@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
-public class Message extends BaseEntity implements Serializable {
+public class Message extends BaseEntity {
 
     @Getter
     @Setter

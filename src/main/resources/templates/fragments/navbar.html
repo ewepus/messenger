@@ -6,6 +6,7 @@
             <li sec:authorize="isAuthenticated()">
                 <a href="/chats/">Мои чаты</a>
             </li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/chats/all">Все чаты системы</a></li>
             <li sec:authorize="isAuthenticated()">
                 <a href="/users/profile" role="button" class="secondary outline">
                     <th:block sec:authentication="name"></th:block>

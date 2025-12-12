@@ -16,17 +16,14 @@ import ru.rutmiit.models.entities.User;
 import ru.rutmiit.models.enums.ChatStatus;
 import ru.rutmiit.models.exceptions.ChatNotFoundException;
 import ru.rutmiit.models.exceptions.RecursionException;
-import ru.rutmiit.models.exceptions.UserNotFoundException;
 import ru.rutmiit.services.AuthService;
 import ru.rutmiit.services.ChatService;
 import ru.rutmiit.services.MessageService;
 
 import java.security.Principal;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -110,8 +107,19 @@ public class ChatController {
 
         List<Chat> chats = chatService.allChats().stream().filter(c -> c.getStatus().equals(ChatStatus.ACTIVE))
                 .filter(chat -> chat.getUsers()
-                .stream().map(User::getUsername).toList()
-                .contains(user.getUsername())).toList();
+                        .stream().map(User::getUsername).toList()
+                        .contains(user.getUsername())).toList();
+
+        model.addAttribute("chats", chats);
+
+        return "chats-all";
+    }
+
+    @GetMapping("/all")
+    public String chatsAll(Principal principal, Model model) {
+        log.debug("Отображение списка всех чатов");
+
+        List<Chat> chats = chatService.allChats();
 
         model.addAttribute("chats", chats);
 
@@ -160,6 +168,7 @@ public class ChatController {
         String username = principal.getName();
         User user = authService.getUser(username);
         Optional<Chat> chat = chatService.chatInfo(chatName);
+
         if (chat.isEmpty()) throw new ChatNotFoundException("Чата с таким названием не существует");
 
         messageService.create(messageModel, chat.get(), user);
@@ -171,5 +180,29 @@ public class ChatController {
                 .buildAndExpand(chatName)
                 .encode()
                 .toUriString();
+    }
+
+    @GetMapping("/chat-delete/{name}")
+    public String deleteChat(@PathVariable("name") String chatName,
+                             RedirectAttributes redirectAttributes,
+                             Principal principal) {
+        log.debug("Запрос на удаление чата: {}", chatName);
+        chatService.removeChat(chatName);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Чат '" + chatName + "' успешно удалён!");
+        if (principal.getName().equals("admin")) return "redirect:/chats/all";
+        return "redirect:/chats/";
+    }
+
+    @GetMapping("/chat-restore/{name}")
+    public String restoreChat(@PathVariable("name") String chatName,
+                              RedirectAttributes redirectAttributes,
+                              Principal principal) {
+        log.debug("Запрос на восстановление чата: {}", chatName);
+        chatService.restoreChat(chatName);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Чат '" + chatName + "' успешно восстановлен!");
+        if (principal.getName().equals("admin")) return "redirect:/chats/all";
+        return "redirect:/chats/";
     }
 }

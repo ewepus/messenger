@@ -13,4 +13,8 @@ public interface ChatService {
     List<Chat> allChats();
 
     Optional<Chat> chatInfo(String name);
+
+    void removeChat(String name);
+
+    void restoreChat(String name);
 }

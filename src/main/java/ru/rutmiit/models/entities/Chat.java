@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "chats")
-public class Chat extends BaseEntity implements Serializable {
+public class Chat extends BaseEntity {
 
     @Getter
     @Setter

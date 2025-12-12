@@ -8,7 +8,6 @@ import ru.rutmiit.dto.CreateMessageDto;
 import ru.rutmiit.models.entities.Chat;
 import ru.rutmiit.models.entities.Message;
 import ru.rutmiit.models.entities.User;
-import ru.rutmiit.models.enums.ChatStatus;
 import ru.rutmiit.repositories.MessageRepository;
 
 import java.time.LocalDateTime;

@@ -8,6 +8,7 @@ import ru.rutmiit.dto.CreateChatDto;
 import ru.rutmiit.models.entities.Chat;
 import ru.rutmiit.models.entities.User;
 import ru.rutmiit.models.enums.ChatStatus;
+import ru.rutmiit.models.exceptions.ChatNotFoundException;
 import ru.rutmiit.repositories.ChatRepository;
 
 import java.time.LocalDateTime;
@@ -48,5 +49,39 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Optional<Chat> chatInfo(String name) {
         return chatRepository.findChatByName(name);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames = {"chats", "chat"}, allEntries = true)
+    public void removeChat(String chatName) {
+        log.debug("Удаление чата: {}", chatName);
+
+        if (!chatRepository.existsByName(chatName)) {
+            log.warn("Попытка удалить несуществующий чат: {}", chatName);
+            throw new ChatNotFoundException("Чат с названием '" + chatName + "' не найден");
+        }
+
+        Optional<Chat> chat = chatRepository.findChatByName(chatName);
+        chat.ifPresent(value -> value.setStatus(ChatStatus.DELETED));
+
+        log.info("Чат успешно удалён: {}", chatName);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames = {"chats", "chat"}, allEntries = true)
+    public void restoreChat(String chatName) {
+        log.debug("Восстановление чата: {}", chatName);
+
+        if (!chatRepository.existsByName(chatName)) {
+            log.warn("Попытка восстановить несуществующий чат: {}", chatName);
+            throw new ChatNotFoundException("Чат с названием '" + chatName + "' не найден");
+        }
+
+        Optional<Chat> chat = chatRepository.findChatByName(chatName);
+        chat.ifPresent(value -> value.setStatus(ChatStatus.ACTIVE));
+
+        log.info("Чат успешно восстановлен: {}", chatName);
     }
 }

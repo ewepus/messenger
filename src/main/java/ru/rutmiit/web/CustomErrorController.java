@@ -23,6 +23,8 @@ public class CustomErrorController implements ErrorController {
                 return "404 - Resource Not Found";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 return "500 - Internal Server Error";
+            } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
+                return "403 - Access denied";
             }
         }
         return "Unexpected Error";

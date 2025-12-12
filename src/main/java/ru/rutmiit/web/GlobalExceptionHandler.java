@@ -13,6 +13,7 @@ import ru.rutmiit.models.exceptions.UserNotFoundException;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(RecursionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleRecursion(RecursionException ex, Model model) {
