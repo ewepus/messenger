@@ -14,7 +14,7 @@ public class Message extends BaseEntity {
 
     @Getter
     @Setter
-    @Column(nullable = false, precision = 4096)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String text;
 
     @CreatedDate
